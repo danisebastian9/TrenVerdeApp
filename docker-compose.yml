@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  db:
+    image: mysql:latest
+    container_name: TrenVerdeDB
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+volumes:
+  mysql_data:
+
+
+  # Comando para correr el contenedor
+    # docker-compose up -d
+
+    # datos de acceso a la base de datos
+    # user: root
+    # password: root
+
+    # Comando para crear la base de datos
+    # create database `tren_verde_db`;
+
+    # ejecutar

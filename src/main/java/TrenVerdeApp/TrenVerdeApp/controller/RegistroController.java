@@ -16,7 +16,7 @@ public class RegistroController {
     @Autowired
     private IRegistroService registroService;
 
-    @GetMapping()
+    @GetMapping("/listar")
     public ResponseEntity<List<Registro>> listarRegistro(){
         List<Registro> registros = registroService.listarRegistro();
         return new ResponseEntity<>(registros, HttpStatus.OK);

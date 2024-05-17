@@ -6,7 +6,6 @@ import TrenVerdeApp.TrenVerdeApp.service.IRegistroService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.util.ArrayList;
 import java.util.List;
 @Service
@@ -53,7 +52,6 @@ public class RegistroServiceImpl implements IRegistroService {
             registroExistente.setTelefono(registroActualizado.getTelefono());
             registroExistente.setFechaNacimiento(registroActualizado.getFechaNacimiento());
             registroExistente.setDireccion(registroActualizado.getDireccion());
-
             registroExistente.setTipoDocumento(registroActualizado.getTipoDocumento());
             registroExistente.setGenero(registroActualizado.getGenero());
             registroExistente.setTipoPersona(registroActualizado.getTipoPersona());

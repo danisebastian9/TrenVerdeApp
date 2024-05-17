@@ -1,6 +1,8 @@
 package TrenVerdeApp.TrenVerdeApp.entity;
 
+
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "ticket")
@@ -9,37 +11,37 @@ public class Ticket {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_ticket")
     private Long ticketId;
-    @Column(length = 80)
+    @Column(nullable = false, length = 80)
+    @NotNull(message = "El campo no puede estar vacio")
     private String origen;
-    @Column(length = 80)
+    @Column(nullable = false, length = 80)
+    @NotNull(message = "El campo no puede estar vacio")
     private String destino;
     @Column(length = 80)
     private String clase;
     @Column(length = 80)
+    @NotNull(message = "El campo no puede estar vacio")
     private double precio;
     @Column(length = 80)
-    private String estado;
-    @Column(length = 80)
-    private Long usuarioId; // ! Foranea
+    private  String estado;
 
     // ! Creación de relación entre tablas
     @ManyToOne
     @JoinColumn(name = "fk_id_usuario", referencedColumnName = "id_usuario")
+    // Nombre de la columna en la tabla 'ticket' que hace referencia al usuario
     private Usuario usuario;
 
     // ! Constructor vacio
     public Ticket() {
     }
 
-    public Ticket(Long ticketId, String origen, String destino, String clase,
-                  double precio, String estado, Long usuarioId, Usuario usuario) {
+    public Ticket(Long ticketId, String origen, String destino, String clase, double precio, String estado, Usuario usuario) {
         this.ticketId = ticketId;
         this.origen = origen;
         this.destino = destino;
         this.clase = clase;
         this.precio = precio;
         this.estado = estado;
-        this.usuarioId = usuarioId;
         this.usuario = usuario;
     }
 
@@ -97,13 +99,5 @@ public class Ticket {
 
     public void setUsuario(Usuario usuario) {
         this.usuario = usuario;
-    }
-
-    public Long getUsuarioId() {
-        return usuarioId;
-    }
-
-    public void setUsuarioId(Long usuarioId) {
-        this.usuarioId = usuarioId;
     }
 }

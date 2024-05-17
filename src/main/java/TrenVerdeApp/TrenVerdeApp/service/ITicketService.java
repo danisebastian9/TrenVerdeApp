@@ -1,8 +1,7 @@
 package TrenVerdeApp.TrenVerdeApp.service;
-import java.util.List;
 
 import TrenVerdeApp.TrenVerdeApp.entity.Ticket;
-
+import java.util.List;
 
 public interface ITicketService {
     public List<Ticket> listarTickets();

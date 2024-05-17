@@ -16,7 +16,7 @@ volumes:
   mysql_data:
 
 
-  # Comando para correr el contenedor
+    # Comando para correr el contenedor
     # docker-compose up -d
 
     # datos de acceso a la base de datos

@@ -1,0 +1,24 @@
+## URL Swagger
+
+http://localhost:8090/trenverde/swagger-ui/index.html#/
+
+## Consultas db
+
+create database `tren_verde_db`;
+
+SELECT * FROM `tren_verde_db`.`registro`;
+
+SELECT * FROM `tren_verde_db`.`genero`;
+
+## generos se registra del 1 al 3
+INSERT INTO `tren_verde_db`.`genero` (`genero`) VALUES ('1');
+
+SELECT * FROM `tren_verde_db`.`tipo_documento`;
+
+## tipo documento se registra del 1 al 6
+INSERT INTO `tren_verde_db`.`tipo_documento` (`tipo_documento`) VALUES ('1');
+
+SELECT * FROM `tren_verde_db`.`tipo_persona`;
+
+## tipo persona se registra del 1 al 2
+INSERT INTO `tren_verde_db`.`tipo_persona` (`tipo_persona`) VALUES ('1');

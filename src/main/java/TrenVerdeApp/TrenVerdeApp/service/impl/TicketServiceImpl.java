@@ -1,7 +1,9 @@
 package TrenVerdeApp.TrenVerdeApp.service.impl;
 
 import java.util.ArrayList;
+import java.util.List;
 
+import TrenVerdeApp.TrenVerdeApp.service.ITicketService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,7 +13,7 @@ import jakarta.transaction.Transactional;
 
 @Service    
 @Transactional
-public class TicketServiceImpl implements ITicketService{
+public class TicketServiceImpl implements ITicketService {
     
     @Autowired
     private ITicketRepository iTicketRepository;
@@ -19,7 +21,7 @@ public class TicketServiceImpl implements ITicketService{
     private List<Ticket> ticket = new ArrayList<>();
 
     @Override
-    public List<Ticket> listarTicket() {
+    public List<Ticket> listarTickets() {
         return ticket = iTicketRepository.findAll();
     }
 
@@ -29,8 +31,8 @@ public class TicketServiceImpl implements ITicketService{
     }
 
     @Override
-    public Ticket buscarTicketPorId(Long idRegistro) {
-        Ticket ticket = iTicketRepository.findAllById(idTicket).orElse(null);
+    public Ticket buscarTicketPorId(Long idTicket) {
+        Ticket ticket = iTicketRepository.findById(idTicket).orElse(null);
         return ticket; 
     }
 
@@ -40,7 +42,7 @@ public class TicketServiceImpl implements ITicketService{
     }
 
     public Ticket actualizarTicket(Long idTicket, Ticket ticketActualizado) {
-        Ticket ticketExistente = iTicketRepository.findById(idTicket).erElse(null);
+        Ticket ticketExistente = iTicketRepository.findById(idTicket).orElse(null);
 
         if(ticketExistente != null) {
             ticketExistente.setOrigen(ticketActualizado.getOrigen());

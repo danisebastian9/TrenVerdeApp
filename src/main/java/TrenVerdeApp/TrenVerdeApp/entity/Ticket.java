@@ -18,25 +18,28 @@ public class Ticket {
     @Column(length = 80)
     private double precio;
     @Column(length = 80)
-    private  String estado;
-
+    private String estado;
+    @Column(length = 80)
+    private Long usuarioId; // ! Foranea
 
     // ! Creación de relación entre tablas
     @ManyToOne
-    @JoinColumn(name = "fk_id_usuario", referencedColumnName = "id_usuario") // Nombre de la columna en la tabla 'ticket' que hace referencia al usuario
+    @JoinColumn(name = "fk_id_usuario", referencedColumnName = "id_usuario")
     private Usuario usuario;
 
     // ! Constructor vacio
     public Ticket() {
     }
+
     public Ticket(Long ticketId, String origen, String destino, String clase,
-                            double precio, String estado, Usuario usuario) {
+                  double precio, String estado, Long usuarioId, Usuario usuario) {
         this.ticketId = ticketId;
         this.origen = origen;
         this.destino = destino;
         this.clase = clase;
         this.precio = precio;
         this.estado = estado;
+        this.usuarioId = usuarioId;
         this.usuario = usuario;
     }
 
@@ -94,5 +97,13 @@ public class Ticket {
 
     public void setUsuario(Usuario usuario) {
         this.usuario = usuario;
+    }
+
+    public Long getUsuarioId() {
+        return usuarioId;
+    }
+
+    public void setUsuarioId(Long usuarioId) {
+        this.usuarioId = usuarioId;
     }
 }

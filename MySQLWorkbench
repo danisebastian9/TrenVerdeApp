@@ -1,0 +1,300 @@
+/* creación de un nuevo schemas para el proyecto*/
+use db_trenverde;
+
+CREATE TABLE Departamento (
+  Id_Departamento INT AUTO_INCREMENT PRIMARY KEY,
+  Nombre_Departamento VARCHAR(100) NOT NULL
+);
+
+CREATE TABLE Municipio (
+  Id_Municipio INT AUTO_INCREMENT PRIMARY KEY,
+  Nombre_Municipio VARCHAR(50) NOT NULL,
+  Id_Departamento INT,
+  FOREIGN KEY (Id_Departamento) REFERENCES Departamento(Id_Departamento)
+);
+
+CREATE TABLE Estacion (
+  Id_Estacion INT AUTO_INCREMENT PRIMARY KEY,
+  Nombre_Estacion VARCHAR(50) NOT NULL,
+  Direccion VARCHAR(50),
+  Capacidad_Pasajeros INT,
+  Capacidad_Carga INT,
+  Municipio VARCHAR(50),
+  Id_Municipio INT,
+  Telefono INT,
+  FOREIGN KEY (Id_Municipio) REFERENCES Municipio(Id_Municipio)
+);
+
+CREATE TABLE Tren (
+  Id_Tren INT AUTO_INCREMENT PRIMARY KEY,
+  Marca VARCHAR(50), 
+  Modelo VARCHAR(50),
+  Tipo_Tren VARCHAR(50),
+  Tipo_Energia VARCHAR(50),
+  Numero_Serie VARCHAR(50),
+  Estado VARCHAR(50),
+  Numero_Vagones INT,
+  Capacidad_Pasajeros INT,
+  Capacidad_Carga INT,
+  HoraSalida DATETIME,
+  HoraLlegada DATETIME,
+  Id_Origen VARCHAR(50),
+  Id_Destino VARCHAR(50),
+  Id_Estacion INT,
+  Fecha_Fabricacion DATE,
+  Ultimo_Mantenimiento DATE,
+  Notas TEXT,
+  FOREIGN KEY (Id_Estacion) REFERENCES Estacion(Id_Estacion)
+);
+
+CREATE TABLE Usuario (
+  Id_Usuario INT AUTO_INCREMENT PRIMARY KEY,
+  Username VARCHAR(50) NOT NULL,
+  Password VARCHAR(50) NOT NULL
+);
+
+CREATE TABLE Genero (
+  Id_Genero INT AUTO_INCREMENT PRIMARY KEY,
+  Tipo_Genero VARCHAR(50) NOT NULL
+);
+
+CREATE TABLE TipoDocumento (
+  Id_TipoDocumento INT AUTO_INCREMENT PRIMARY KEY,
+  Tipo_Documento VARCHAR(50) NOT NULL
+);
+
+CREATE TABLE TipoCliente (
+  Id_TipoCliente INT AUTO_INCREMENT PRIMARY KEY,
+  Tipo_Cliente VARCHAR(50) NOT NULL,
+  Descripcion VARCHAR(255)
+);
+
+CREATE TABLE Cliente (
+  Id_Cliente INT AUTO_INCREMENT PRIMARY KEY,
+  Nombre VARCHAR(100) NOT NULL,
+  Numero_Documento VARCHAR(50),
+  Email VARCHAR(50),
+  Telefono VARCHAR(50),
+  Telefono_Fijo VARCHAR(50),
+  FechaNacimiento DATETIME,
+  Direccion VARCHAR(255),
+  Fecha_Registro DATETIME,
+  Id_Usuario INT,
+  Id_Genero INT,
+  Id_TipoDocumento INT,
+  Id_TipoCliente INT,
+  FOREIGN KEY (Id_Usuario) REFERENCES Usuario(Id_Usuario),
+  FOREIGN KEY (Id_Genero) REFERENCES Genero(Id_Genero),
+  FOREIGN KEY (Id_TipoDocumento) REFERENCES TipoDocumento(Id_TipoDocumento),
+  FOREIGN KEY (Id_TipoCliente) REFERENCES TipoCliente(Id_TipoCliente)
+);
+
+CREATE TABLE Ticket (
+  Id_Ticket INT AUTO_INCREMENT PRIMARY KEY,
+  Id_Tren INT,
+  Numero_Asiento VARCHAR(50),
+  Clase VARCHAR(50),
+  Precio DECIMAL(10, 2),
+  Fecha_Viaje DATETIME,
+  FOREIGN KEY (Id_Tren) REFERENCES Tren(Id_Tren)
+);
+
+CREATE TABLE Reserva (
+  Id_Reserva INT AUTO_INCREMENT PRIMARY KEY,
+  EstadoReserva VARCHAR(50),
+  FechaReserva DATETIME,
+  Id_Ticket INT,
+  Id_Usuario INT,
+  FOREIGN KEY (Id_Ticket) REFERENCES Ticket(Id_Ticket),
+  FOREIGN KEY (Id_Usuario) REFERENCES Usuario(Id_Usuario)
+);
+
+CREATE TABLE Pago (
+  Id_Pago INT AUTO_INCREMENT PRIMARY KEY,
+  Id_Reserva INT,
+  EstadoPago VARCHAR(50),
+  MetodoPago VARCHAR(50),
+  FechaPago DATETIME,
+  Monto DECIMAL(10, 2),
+  DetallesPago VARCHAR(255),
+  FOREIGN KEY (Id_Reserva) REFERENCES Reserva(Id_Reserva)
+);
+
+CREATE TABLE Rol (
+  Id_Rol INT AUTO_INCREMENT PRIMARY KEY,
+  Nombre_Rol VARCHAR(50) NOT NULL
+);
+
+CREATE TABLE Permiso (
+  Id_Permiso INT AUTO_INCREMENT PRIMARY KEY,
+  Nombre_Permiso VARCHAR(50) NOT NULL
+);
+
+CREATE TABLE RolPermiso (
+  Id_Rol INT,
+  Id_Permiso INT,
+  PRIMARY KEY (Id_Rol, Id_Permiso),
+  FOREIGN KEY (Id_Rol) REFERENCES Rol(Id_Rol),
+  FOREIGN KEY (Id_Permiso) REFERENCES Permiso(Id_Permiso)
+);
+
+CREATE TABLE UsuarioRol (
+  Id_Usuario INT,
+  Id_Rol INT,
+  PRIMARY KEY (Id_Usuario, Id_Rol),
+  FOREIGN KEY (Id_Usuario) REFERENCES Usuario(Id_Usuario),
+  FOREIGN KEY (Id_Rol) REFERENCES Rol(Id_Rol)
+);
+
+/* ver tablas de la DB*/
+SHOW tables;
+
+/* insertar registros en cada tabla*/ 
+/* que no tengan foreign keys*/
+INSERT INTO genero(Id_Genero, Tipo_Genero)
+VALUES ( 1, 'Femenino');
+INSERT INTO genero(Id_Genero, Tipo_Genero)
+VALUES ( 2, 'Masculino');
+INSERT INTO genero(Id_Genero, Tipo_Genero)
+VALUES ( 3, 'otro');
+
+INSERT INTO tipodocumento (Id_TipoDocumento, Tipo_Documento)
+VALUES (01, 'Cedula de Ciudadania ');
+INSERT INTO tipodocumento (Id_TipoDocumento, Tipo_Documento)
+VALUES (02, 'Pasaporte');
+INSERT INTO tipodocumento (Id_TipoDocumento, Tipo_Documento)
+VALUES (03, 'Nit');
+
+INSERT INTO tipocliente (Id_TipoCliente, Tipo_Cliente, Descripcion)
+VALUES (1,'Clientes Corporativos','Organizacion formalizada: Adquiere productos o servicios para uso interno o para usos comerciales.');
+INSERT INTO tipocliente (Id_TipoCliente, Tipo_Cliente, Descripcion)
+VALUES (2, 'Cliente Comercial','Empresas en general: Adquiere productos o servicios para uso interno o para usos comerciales. ');
+INSERT INTO tipocliente (Id_TipoCliente, Tipo_Cliente, Descripcion)
+VALUES(3, 'Cliente Individual ', 'Adquiere servicos  para uso personal. ');
+
+INSERT INTO usuario (Id_Usuario, Username, U_Password)
+VALUES (1,'PedroDominguez', 1234);
+INSERT INTO usuario (Id_Usuario, Username, U_Password)
+VALUES (2,'EllaEscobar', 1234);
+INSERT INTO usuario (Id_Usuario, Username, U_Password)
+VALUES (3,'AnnyBlain', 1234);
+
+INSERT INTO rol (Id_Rol, Nombre_Rol)
+VALUES (01,'Usuario Normal' );
+INSERT INTO rol (Id_Rol, Nombre_Rol)
+VALUES (02,'Administrador de sistema' );
+INSERT INTO rol (Id_Rol, Nombre_Rol)
+VALUES (03,'Analista de datos' );
+INSERT INTO rol (Id_Rol, Nombre_Rol)
+VALUES (04,'Supervisor' );
+
+INSERT INTO permiso (Id_Permiso, Nombre_Permiso )
+VALUES ( 1,'Revisar');
+INSERT INTO permiso (Id_Permiso, Nombre_Permiso )
+VALUES ( 2,'Eliminar ');
+INSERT INTO permiso (Id_Permiso, Nombre_Permiso )
+VALUES ( 3,'Editar y Crear');
+INSERT INTO permiso (Id_Permiso, Nombre_Permiso )
+VALUES ( 4,'Administrar');
+
+INSERT INTO rolpermiso (Id_Rol, Id_Permiso )
+VALUES (01,1 );
+INSERT INTO rolpermiso (Id_Rol, Id_Permiso )
+VALUES (04,2 );
+INSERT INTO rolpermiso (Id_Rol, Id_Permiso )
+VALUES (02,4 );
+INSERT INTO rolpermiso (Id_Rol, Id_Permiso )
+VALUES (03,3 );
+
+INSERT INTO departamentos (Id_Departamento, Nombre_Departamento )
+VALUES (15001,'Boyaca' );
+INSERT INTO departamentos (Id_Departamento, Nombre_Departamento )
+VALUES (25001,'Cundinamarca' );
+INSERT INTO departamentos (Id_Departamento, Nombre_Departamento )
+VALUES (39001,'Santander' );
+
+INSERT INTO municipios (Id_Municipio, Nombre_Municipio, Id_Departamento)
+VALUES (154007, 'Villa de Leyva', 15001);
+INSERT INTO municipios (Id_Municipio, Nombre_Municipio, Id_Departamento)
+VALUES (154647, 'Chiquinquira', 15001);
+INSERT INTO municipios (Id_Municipio, Nombre_Municipio, Id_Departamento)
+VALUES (253847, 'Yacopi', 25001);
+INSERT INTO municipios (Id_Municipio, Nombre_Municipio, Id_Departamento)
+VALUES (250240, 'Cajica', 25001);
+INSERT INTO municipios (Id_Municipio, Nombre_Municipio, Id_Departamento)
+VALUES (682011, 'Malaga', 39001);
+INSERT INTO municipios (Id_Municipio, Nombre_Municipio, Id_Departamento)
+VALUES (684521, 'Puente Nacional', 39001);
+ /* Eliminar Columna redundante
+ ALTER TABLE estacion
+DROP COLUMN Municipio;*/ 
+
+INSERT INTO estacion (Id_Estacion, Nombre_Estacion, Direccion, Capacidad_Pasajeros, Capacidad_Carga,Id_Municipio, Telefono )
+VALUES (001,'La Estrella.','Cra 7 n 12-18 ',150,'80 kl',154647,6487124 );
+INSERT INTO estacion (Id_Estacion, Nombre_Estacion, Direccion, Capacidad_Pasajeros, Capacidad_Carga,Id_Municipio, Telefono )
+VALUES (004,'Central.','Cra 16 n 4-8 ',400,'290 kl',250240,62147921 );
+INSERT INTO estacion (Id_Estacion, Nombre_Estacion, Direccion, Capacidad_Pasajeros, Capacidad_Carga,Id_Municipio, Telefono )
+VALUES (005,'La Victoria.','Cra n16',300,'350 kl',253847,634712456 );
+
+/* Nota: la columna de capacidad_Carga se modifico su tipo de dato (int a varchar)*/ 
+
+INSERT INTO tren (Id_Tren, Marca, Modelo, Tipo_Tren, Tipo_Energia, Numero_Serie, Estado, Numero_Vagones,
+Capacidad_Pasajeros, Capacidad_Carga, HoraSalida, HoraLlegada, Id_Origen, Id_Destino, Id_Estacion,
+Fecha_Fabricacion, Ultimo_Mantenimiento, Notas )
+VALUES (1, 'FerroExpreso', 'Modelo B', 'Metro', 'Eléctrica', 'M-002', 'Activo', 4, 
+150, '1200 kg', '2021-02-15 09:00:00', '2022-08-15 19:00:00', 250240, 682011, 4, 
+'2021-02-15', '2022-08-15', 'No hay notas...');
+INSERT INTO tren (Id_Tren, Marca, Modelo, Tipo_Tren, Tipo_Energia, Numero_Serie, Estado, 
+Numero_Vagones, Capacidad_Pasajeros, Capacidad_Carga, HoraSalida, HoraLlegada, Id_Origen, Id_Destino, Id_Estacion, 
+Fecha_Fabricacion, Ultimo_Mantenimiento, Notas)
+VALUES (2, 'EcoRailways', 'Modelo C', 'Regional', 'Híbrida', 'R-003', 'Activo', 6, 250, '800 kg', 
+'2020-05-20 10:00:00', '2021-11-20 20:00:00', 253847, 154647, 5, '2020-05-20', 
+'2021-11-20', 'No hay notas...');
+INSERT INTO tren (Id_Tren, Marca, Modelo, Tipo_Tren, Tipo_Energia, Numero_Serie, Estado, 
+Numero_Vagones, Capacidad_Pasajeros, Capacidad_Carga, HoraSalida, HoraLlegada, Id_Origen, Id_Destino, Id_Estacion, 
+Fecha_Fabricacion, Ultimo_Mantenimiento, Notas)
+VALUES(3, 'Renault', 'Modelo D', 'Expreso', 'Diésel', 'E-004', 'Activo', 4, 180, '1000 kg', 
+'2023-04-10 08:30:00', '2023-04-10 18:30:00', 154647, 250240, 4, '2022-10-15', '2023-03-20',
+'Tren ecológico para transporte de pasajeros' );
+
+INSERT INTO ticket (Id_Ticket, Id_Tren, Numero_Asiento, Clase, Precio, Fecha_Viaje, Horario )
+VALUES (1,2, 28,'Estandar',35000,'2024-05-10 11:30:00','A.M' );
+INSERT INTO ticket (Id_Ticket, Id_Tren, Numero_Asiento, Clase, Precio, Fecha_Viaje,Horario )
+VALUES (2,3, 6,'Premium',95000,'2024-07-26 05:30:00', 'P.M' );
+INSERT INTO ticket (Id_Ticket, Id_Tren, Numero_Asiento, Clase, Precio, Fecha_Viaje,Horario )
+VALUES (3,1, 35,'Ejecutivo',125000,'2024-08-06 04:15:00', 'A.M' );
+
+/* Nota: Se agrego una columna para horario de tipo Enum (A.M o  P.M) */
+
+/*borrar un registro especifico
+DELETE FROM ticket
+WHERE Id_Ticket = 1004;*/
+/* cambiar el orden de las columnas 
+ALTER TABLE ticket MODIFY COLUMN Horario ENUM('A.M', 'P.M') AFTER Fecha_Viaje;*/
+
+INSERT INTO reserva (Id_Reserva, EstadoReserva,FechaReserva,Horario,Id_Ticket, Id_Usuario )
+VALUES (27,'Procesando','2024-05-02 08:15:00','A.M',1,1  );
+INSERT INTO reserva (Id_Reserva, EstadoReserva,FechaReserva,Horario,Id_Ticket, Id_Usuario )
+VALUES (28,'Aceptada','2024-05-02 04:55:08','P.M',2,2  );
+INSERT INTO reserva (Id_Reserva, EstadoReserva,FechaReserva,Horario,Id_Ticket, Id_Usuario )
+VALUES (29,'Aceptada','2024-06-22 06:30:00','P.M',3,3 );
+
+
+INSERT INTO pago (Id_Pago, Id_Reserva,EstadoPago, MetodoPago,FechaPago,Monto,DetallesPago)
+VALUES (1,27,'En espera','Consignacion Bancaria','2024-06-22 06:30:00',35000,'En espera de pago' );
+INSERT INTO pago (Id_Pago, Id_Reserva,EstadoPago, MetodoPago,FechaPago,Monto,DetallesPago)
+VALUES (2,28,'Confirmado','Transferencia Bancaria','2024-08-06 04:45:00',95000,'Pago Exitoso' );
+INSERT INTO pago (Id_Pago, Id_Reserva,EstadoPago, MetodoPago,FechaPago,Monto,DetallesPago)
+VALUES (3,29,'Aceptado','Transaccion Bancaria','2024-07-06 04:45:00',125000,'Pago En proceso' );
+DELETE FROM pago  WHERE id_reserva > 0;
+
+INSERT INTO cliente (Id_Cliente, Nombres,Apellidos,Numero_Documento, Email, Telefono, Telefono_Fijo,
+FechaNacimiento, Direccion, Fecha_Registro,Id_Usuario,Id_Genero,Id_TipoDocumento,Id_TipoCliente )
+VALUES (1, 'Pedro', 'Dominguez Londoño', '12345678', 'pedro@email.com', '322547891', '687654321', 
+'1990-05-15', 'Calle 123', '2024-05-18 04:45:00', 1, 1, 1,1);
+INSERT INTO cliente (Id_Cliente, Nombres, Apellidos, Numero_Documento, Email, Telefono, Telefono_Fijo, FechaNacimiento, Direccion, Fecha_Registro, Id_Usuario, Id_Genero, Id_TipoDocumento, Id_TipoCliente)
+VALUES (3, 'Ella', 'Escobar López', '56789012', 'ella@email.com', '3184589012', 
+'687123456', '1999-03-10', 'Carrera 789', '2024-05-18 08:25:17', 3, 1, 2, 3);
+INSERT INTO cliente (Id_Cliente, Nombres, Apellidos, Numero_Documento, Email, Telefono, Telefono_Fijo, FechaNacimiento, Direccion, Fecha_Registro, Id_Usuario, Id_Genero, Id_TipoDocumento, Id_TipoCliente)
+VALUES (2, 'Anny', 'Blain Perez', '87654321', 'anny@email.com',
+ '321459021', '123456789', '2000-08-20', 'Avenida 456', '2024-05-18 11:55:27', 2, 2, 1, 2);

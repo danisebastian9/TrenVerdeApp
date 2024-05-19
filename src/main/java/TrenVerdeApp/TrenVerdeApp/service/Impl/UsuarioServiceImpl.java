@@ -40,7 +40,7 @@ public class UsuarioServiceImpl implements UserDetailsService, IUsuarioService {
     }
    @Override
     public Collection<? extends GrantedAuthority> mapRolesToAuthorities(Set<Rol> roles) {
-        return roles.stream().map(role -> new SimpleGrantedAuthority(role.getNombreRol())).collect(Collectors.toList());
+        return roles.stream().map(role -> new SimpleGrantedAuthority(role.getTipoRol().name())).collect(Collectors.toList());
     }
     @Override
     public List<Usuario> listarUsuarios() {

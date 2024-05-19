@@ -12,18 +12,25 @@ public class Rol {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_rol")
     private Long idRol;
-    private String nombreRol;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "tipo_rol")
+    private TipoRol tipoRol;
 
     @ManyToMany(mappedBy = "roles")
     private Set<Usuario> usuarios = new HashSet<>();
 
+    public enum TipoRol {
+        SUPERADMIN,
+        ADMIN,
+        USER
+    }
+
     public Rol() {
     }
 
-    public Rol(Long idRol, String nombreRol, Set<Usuario> usuarios) {
-        this.idRol = idRol;
-        this.nombreRol = nombreRol;
-        this.usuarios = usuarios;
+    public Rol(TipoRol tipoRol) {
+        this.tipoRol = tipoRol;
     }
 
     public Long getIdRol() {
@@ -34,12 +41,12 @@ public class Rol {
         this.idRol = idRol;
     }
 
-    public String getNombreRol() {
-        return nombreRol;
+    public TipoRol getTipoRol() {
+        return tipoRol;
     }
 
-    public void setNombreRol(String nombreRol) {
-        this.nombreRol = nombreRol;
+    public void setTipoRol(TipoRol tipoRol) {
+        this.tipoRol = tipoRol;
     }
 
     public Set<Usuario> getUsuarios() {
@@ -48,18 +55,5 @@ public class Rol {
 
     public void setUsuarios(Set<Usuario> usuarios) {
         this.usuarios = usuarios;
-    }
-
-    public Rol(String nombreRol) {
-        this.nombreRol = nombreRol;
-    }
-    public void addUsuario(Usuario usuario) {
-        usuarios.add(usuario);
-        usuario.getRoles().add(this);
-    }
-
-    public void removeUsuario(Usuario usuario) {
-        usuarios.remove(usuario);
-        usuario.getRoles().remove(this);
     }
 }

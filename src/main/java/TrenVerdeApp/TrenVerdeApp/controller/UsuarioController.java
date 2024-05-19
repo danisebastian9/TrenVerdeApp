@@ -20,7 +20,7 @@ public class UsuarioController {
         return usuarioService.listarUsuarios();
     }
 
-    @PostMapping
+    @PostMapping("/registrar")
     public Usuario guardarUsuario(@RequestBody Usuario usuario) {
         return usuarioService.guardarUsuario(usuario);
     }

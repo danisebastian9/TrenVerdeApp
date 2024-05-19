@@ -6,11 +6,13 @@ import TrenVerdeApp.TrenVerdeApp.entity.Usuario;
 import TrenVerdeApp.TrenVerdeApp.repository.IUsuarioRepository;
 import TrenVerdeApp.TrenVerdeApp.service.IUsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
@@ -24,6 +26,9 @@ public class UsuarioServiceImpl implements UserDetailsService, IUsuarioService {
 
     @Autowired
     private IUsuarioRepository usuarioRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -43,7 +48,12 @@ public class UsuarioServiceImpl implements UserDetailsService, IUsuarioService {
     }
     @Override
     public Usuario guardarUsuario(Usuario usuario) {
-        return usuarioRepository.save(usuario);
+        usuario.setPassword(passwordEncoder.encode(usuario.getPassword()));
+        try {
+            return usuarioRepository.save(usuario);
+        } catch (DataIntegrityViolationException e) {
+            throw new RuntimeException("El nombre de usuario ya está en uso. Por favor, elija otro nombre de usuario.");
+        }
     }
     @Override
     public Usuario buscarUsuarioPorId(Integer idUsuario) {
@@ -70,5 +80,6 @@ public class UsuarioServiceImpl implements UserDetailsService, IUsuarioService {
         }
         return null;
     }
+
 }
 

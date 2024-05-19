@@ -14,7 +14,7 @@ public class Usuario {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_usuario")
     private Long idUsuario;
-    @Column(nullable = false, length = 20)
+    @Column(nullable = false, length = 20, unique = true)
     @NotNull(message = "El nombre de usuario es obligatorio")
     @Size(min = 8, message = "El nombre de usuario debe tener al menos 8 caracteres")
     private String username;

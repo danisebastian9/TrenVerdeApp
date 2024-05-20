@@ -1,5 +1,7 @@
 package TrenVerdeApp.TrenVerdeApp.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 
 import java.util.HashSet;
@@ -7,6 +9,7 @@ import java.util.Set;
 
 @Entity
 @Table(name = "Rol")
+@JsonIgnoreProperties({"usuarios"})
 public class Rol {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -18,6 +21,7 @@ public class Rol {
     private TipoRol tipoRol;
 
     @ManyToMany(mappedBy = "roles")
+    @JsonBackReference
     private Set<Usuario> usuarios = new HashSet<>();
 
     public enum TipoRol {

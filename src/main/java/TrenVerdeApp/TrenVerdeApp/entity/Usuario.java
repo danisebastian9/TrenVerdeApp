@@ -1,5 +1,7 @@
 package TrenVerdeApp.TrenVerdeApp.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -9,6 +11,7 @@ import java.util.Set;
 
 @Entity
 @Table(name = "Usuario")
+@JsonIgnoreProperties({"roles"})
 public class Usuario {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,6 +28,8 @@ public class Usuario {
     @JoinTable(name = "UsuarioRol",
             joinColumns = @JoinColumn(name = "id_usuario"),
             inverseJoinColumns = @JoinColumn(name = "id_rol"))
+
+    @JsonManagedReference
     private Set<Rol> roles = new HashSet<>();
 
 

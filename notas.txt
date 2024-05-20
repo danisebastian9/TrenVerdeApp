@@ -7,12 +7,11 @@ http://localhost:8090/trenverde/swagger-ui/index.html#/
 http://localhost:8090/trenverde/api/usuarios
 
 {
-  "username": "usuario1",
+  "username": "usuario3",
   "password": "contraseña123",
   "roles": [
     {
-      "idRol": 1,
-      "nombreRol": "ROLE_USER"
+      "idRol": 3 // rol que tendra el usuario en el sistema
     }
   ]
 }
@@ -30,4 +29,18 @@ http://localhost:8090/trenverde/api/usuarios
     }
   ],
   "id": 0
+}
+
+## Body Editar usuarios en POSTMAN
+
+http://localhost:8090/trenverde/api/usuarios/actualizar/1
+
+{
+  "username": "usuario2sd",
+  "password": "26f3645ffdfsd",
+  "roles": [
+    {
+      "idRol": 3 // rol que tendra el usuario en el sistema
+    }
+  ]
 }

@@ -3,6 +3,7 @@ package TrenVerdeApp.TrenVerdeApp.controller;
 import TrenVerdeApp.TrenVerdeApp.entity.Usuario;
 import TrenVerdeApp.TrenVerdeApp.service.IUsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,23 +16,25 @@ public class UsuarioController {
     @Autowired
     private IUsuarioService usuarioService;
 
-    @GetMapping
-    public List<Usuario> listarUsuarios() {
-        return usuarioService.listarUsuarios();
+    @GetMapping("/listar")
+    public ResponseEntity<List<Usuario>> listarUsuarios() {
+        List<Usuario> usuarios = usuarioService.listarUsuarios();
+        return new ResponseEntity<>(usuarios, HttpStatus.OK);
     }
 
     @PostMapping("/registrar")
-    public Usuario guardarUsuario(@RequestBody Usuario usuario) {
-        return usuarioService.guardarUsuario(usuario);
+    public ResponseEntity<Usuario> guardarUsuario(@RequestBody Usuario usuario) {
+        Usuario nuevoUsuario = usuarioService.guardarUsuario(usuario);
+        return new ResponseEntity<>(nuevoUsuario, HttpStatus.CREATED);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Usuario> buscarUsuarioPorId(@PathVariable Integer id) {
-        Usuario usuario = usuarioService.buscarUsuarioPorId(id);
+    @GetMapping("buscar/{idUsuario}")
+    public ResponseEntity<Usuario> buscarUsuarioPorId(@PathVariable Integer idUsuario) {
+        Usuario usuario = usuarioService.buscarUsuarioPorId(idUsuario);
         if (usuario != null) {
-            return ResponseEntity.ok(usuario);
+            return new ResponseEntity<>(usuario, HttpStatus.OK);
         } else {
-            return ResponseEntity.notFound().build();
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 
@@ -39,26 +42,32 @@ public class UsuarioController {
     public ResponseEntity<Usuario> buscarUsuarioPorUsername(@PathVariable String username) {
         Usuario usuario = usuarioService.buscarUsuarioPorUsername(username);
         if (usuario != null) {
-            return ResponseEntity.ok(usuario);
+            return new ResponseEntity<>(usuario, HttpStatus.OK);
         } else {
-            return ResponseEntity.notFound().build();
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Usuario> actualizarUsuario(@PathVariable Long id, @RequestBody Usuario usuarioActualizado) {
-        Usuario usuario = usuarioService.actualizarUsuario(id, usuarioActualizado);
+    @PutMapping("/actualizar/{idUsuario}")
+    public ResponseEntity<String> actualizarUsuario(@PathVariable Long idUsuario, @RequestBody Usuario usuarioActualizado) {
+        Usuario usuario = usuarioService.actualizarUsuario(idUsuario, usuarioActualizado);
+
         if (usuario != null) {
-            return ResponseEntity.ok(usuario);
+            return ResponseEntity.ok("Usuario actualizado correctamente");
         } else {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se encontro el usuario con el ID: " + idUsuario + " o el nombre de usuario: " + usuarioActualizado.getUsername() + " ya existe");
         }
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> eliminarUsuario(@PathVariable Long id) {
-        usuarioService.eliminarUsuario(id);
-        return ResponseEntity.noContent().build();
+    @DeleteMapping("/eliminar/{idUsuario}")
+    public ResponseEntity<String> eliminarUsuario(@PathVariable Long idUsuario) {
+        Usuario usuarioExistente = usuarioService.buscarUsuarioPorId(Math.toIntExact(idUsuario));
+
+        if (usuarioExistente != null) {
+            usuarioService.eliminarUsuario(idUsuario);
+            return ResponseEntity.ok("Usuario eliminado correctamente");
+        }else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se encontro el usuario con el ID: " + idUsuario);
+        }
     }
 }
-

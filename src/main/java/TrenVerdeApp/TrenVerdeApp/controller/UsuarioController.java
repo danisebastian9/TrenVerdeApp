@@ -11,6 +11,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/usuarios")
+@CrossOrigin(origins = "http://127.0.0.1:5500") // Permitir solicitudes desde el frontend
 public class UsuarioController {
 
     @Autowired
@@ -24,11 +25,17 @@ public class UsuarioController {
 
     @PostMapping("/registrar")
     public ResponseEntity<Usuario> guardarUsuario(@RequestBody Usuario usuario) {
-        Usuario nuevoUsuario = usuarioService.guardarUsuario(usuario);
-        return new ResponseEntity<>(nuevoUsuario, HttpStatus.CREATED);
+        try {
+            Usuario nuevoUsuario = usuarioService.guardarUsuario(usuario);
+            return new ResponseEntity<>(nuevoUsuario, HttpStatus.CREATED);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
-    @GetMapping("buscar/{idUsuario}")
+
+    @GetMapping("/buscar/{idUsuario}")
     public ResponseEntity<Usuario> buscarUsuarioPorId(@PathVariable Integer idUsuario) {
         Usuario usuario = usuarioService.buscarUsuarioPorId(idUsuario);
         if (usuario != null) {
@@ -66,7 +73,7 @@ public class UsuarioController {
         if (usuarioExistente != null) {
             usuarioService.eliminarUsuario(idUsuario);
             return ResponseEntity.ok("Usuario eliminado correctamente");
-        }else {
+        } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se encontro el usuario con el ID: " + idUsuario);
         }
     }

@@ -2,12 +2,16 @@ package TrenVerdeApp.TrenVerdeApp.controller;
 
 import TrenVerdeApp.TrenVerdeApp.entity.Usuario;
 import TrenVerdeApp.TrenVerdeApp.service.IUsuarioService;
+import jakarta.validation.Valid;
+import org.aspectj.bridge.Message;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Objects;
 
 @RestController
 @RequestMapping("/api/usuarios")
@@ -24,16 +28,17 @@ public class UsuarioController {
     }
 
     @PostMapping("/registrar")
-    public ResponseEntity<Usuario> guardarUsuario(@RequestBody Usuario usuario) {
+    public ResponseEntity<?> guardarUsuario(@Valid @RequestBody Usuario usuario, BindingResult bindingResult) {
+        if (bindingResult.hasErrors())
+            return new ResponseEntity<>(Objects.requireNonNull(bindingResult.getFieldError().getDefaultMessage()), HttpStatus.BAD_REQUEST);
         try {
-            Usuario nuevoUsuario = usuarioService.guardarUsuario(usuario);
+            ResponseEntity<?> nuevoUsuario = usuarioService.guardarUsuario(usuario);
             return new ResponseEntity<>(nuevoUsuario, HttpStatus.CREATED);
         } catch (Exception e) {
             e.printStackTrace();
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
 
     @GetMapping("/buscar/{idUsuario}")
     public ResponseEntity<Usuario> buscarUsuarioPorId(@PathVariable Integer idUsuario) {
@@ -56,13 +61,16 @@ public class UsuarioController {
     }
 
     @PutMapping("/actualizar/{idUsuario}")
-    public ResponseEntity<String> actualizarUsuario(@PathVariable Long idUsuario, @RequestBody Usuario usuarioActualizado) {
-        Usuario usuario = usuarioService.actualizarUsuario(idUsuario, usuarioActualizado);
+    public ResponseEntity<?> actualizarUsuario(@PathVariable Integer idUsuario, @Valid @RequestBody Usuario usuarioActualizado, BindingResult bindingResult) {
+        if (bindingResult.hasErrors())
+            return new ResponseEntity<>(Objects.requireNonNull(bindingResult.getFieldError().getDefaultMessage()), HttpStatus.BAD_REQUEST);
+        try {
+            ResponseEntity<?> usuario = usuarioService.actualizarUsuario(Long.valueOf(idUsuario), usuarioActualizado);
+            return new ResponseEntity<>(usuario, HttpStatus.OK);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
 
-        if (usuario != null) {
-            return ResponseEntity.ok("Usuario actualizado correctamente");
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se encontro el usuario con el ID: " + idUsuario + " o el nombre de usuario: " + usuarioActualizado.getUsername() + " ya existe");
         }
     }
 

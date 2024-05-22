@@ -7,6 +7,8 @@ import TrenVerdeApp.TrenVerdeApp.repository.IUsuarioRepository;
 import TrenVerdeApp.TrenVerdeApp.service.IUsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -38,48 +40,65 @@ public class UsuarioServiceImpl implements UserDetailsService, IUsuarioService {
         return new org.springframework.security.core.userdetails.User(usuario.getUsername(),
                 usuario.getPassword(), mapRolesToAuthorities(usuario.getRoles()));
     }
+
    @Override
     public Collection<? extends GrantedAuthority> mapRolesToAuthorities(Set<Rol> roles) {
         return roles.stream().map(role -> new SimpleGrantedAuthority(role.getTipoRol().name())).collect(Collectors.toList());
     }
+
     @Override
     public List<Usuario> listarUsuarios() {
         return usuarioRepository.findAll();
     }
+
     @Override
-    public Usuario guardarUsuario(Usuario usuario) {
+    public ResponseEntity<?> guardarUsuario(Usuario usuario) {
         usuario.setPassword(passwordEncoder.encode(usuario.getPassword()));
         try {
-            return usuarioRepository.save(usuario);
+            Usuario nuevoUsuario = usuarioRepository.save(usuario);
+            return new ResponseEntity<>(nuevoUsuario, HttpStatus.CREATED);
         } catch (DataIntegrityViolationException e) {
-            throw new RuntimeException("El nombre de usuario ya está en uso. Por favor, elija otro nombre de usuario.");
+            return new ResponseEntity<>("El nombre de usuario ya está en uso. Por favor, elija otro nombre de usuario.", HttpStatus.CONFLICT);
         }
     }
+
     @Override
     public Usuario buscarUsuarioPorId(Integer idUsuario) {
         Optional<Usuario> optionalUsuario = usuarioRepository.findById(idUsuario);
         return optionalUsuario.orElse(null);
     }
+
     @Override
     public Usuario buscarUsuarioPorUsername(String username) {
         return usuarioRepository.findByUsername(username).orElse(null);
     }
+
     @Override
     public void eliminarUsuario(Long idUsuario) {
         usuarioRepository.deleteById(Math.toIntExact(idUsuario));
     }
-    @Override
-    public Usuario actualizarUsuario(Long idUsuario, Usuario usuarioActualizado) {
-        Usuario usuarioExistente = usuarioRepository.findById(Math.toIntExact(idUsuario)).orElse(null);
-        if (usuarioExistente != null) {
-            // Actualizar los campos del usuario existente con los del usuario actualizado
-            usuarioExistente.setUsername(usuarioActualizado.getUsername());
-            usuarioExistente.setPassword(usuarioActualizado.getPassword());
-            // Guardar y devolver el usuario actualizado
-            return usuarioRepository.save(usuarioExistente);
-        }
-        return null;
-    }
 
+    @Override
+    public ResponseEntity<?> actualizarUsuario(Long idUsuario, Usuario usuarioActualizado) {
+        try {
+            Usuario usuario = usuarioRepository.findById(Math.toIntExact(idUsuario)).orElse(null);
+            if (usuario != null) {
+                usuario.setUsername(usuarioActualizado.getUsername());
+                usuario.setPassword(passwordEncoder.encode(usuarioActualizado.getPassword()));
+                return new ResponseEntity<>(usuarioRepository.save(usuario), HttpStatus.OK);
+            }
+            return new ResponseEntity<>("No se encontró el usuario con el ID: " + idUsuario + " o el nombre de usuario: " + usuarioActualizado.getUsername() + " ya existe", HttpStatus.NOT_FOUND);
+        } catch (DataIntegrityViolationException e) {
+            return new ResponseEntity<>("El nombre de usuario ya está en uso. Por favor, elija otro nombre de usuario.", HttpStatus.CONFLICT);
+        }
+//            Usuario usuarioExistente = usuarioRepository.findById(Math.toIntExact(idUsuario)).orElse(null);
+//            if (usuarioExistente != null) {
+//                usuarioExistente.setUsername(usuarioActualizado.getUsername());
+//                usuarioExistente.setPassword(passwordEncoder.encode(usuarioActualizado.getPassword()));
+//                return new ResponseEntity<>(usuarioRepository.save(usuarioExistente), HttpStatus.OK);
+//            }
+//                return new ResponseEntity<>("El nombre de usuario ya está en uso. Por favor, elija otro nombre de usuario.", HttpStatus.CONFLICT);
+//
+    }
 }
 

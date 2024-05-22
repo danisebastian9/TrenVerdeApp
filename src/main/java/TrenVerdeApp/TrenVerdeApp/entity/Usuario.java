@@ -3,6 +3,7 @@ package TrenVerdeApp.TrenVerdeApp.entity;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
@@ -19,9 +20,11 @@ public class Usuario {
     private Long idUsuario;
     @Column(nullable = false, length = 20, unique = true)
     @NotNull(message = "El nombre de usuario es obligatorio")
+    @NotBlank(message = "El nombre de usuario no puede estar en blanco")
     @Size(min = 8, message = "El nombre de usuario debe tener al menos 8 caracteres")
     private String username;
     @NotNull(message = "La contraseña es obligatoria")
+    @NotBlank(message = "El password no puede estar en blanco")
     private String password;
 
     @ManyToMany(fetch = FetchType.EAGER)

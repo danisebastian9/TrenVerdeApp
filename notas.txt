@@ -2,23 +2,45 @@
 
 http://localhost:8090/trenverde/swagger-ui/index.html#/
 
-## Consultas db
+## Body registro usuarios en POSTMAN
 
-create database `tren_verde_db`;
+http://localhost:8090/trenverde/api/usuarios
 
-SELECT * FROM `tren_verde_db`.`registro`;
+{
+  "username": "usuario3",
+  "password": "contraseña123",
+  "roles": [
+    {
+      "idRol": 3 // rol que tendra el usuario en el sistema
+    }
+  ]
+}
 
-SELECT * FROM `tren_verde_db`.`genero`;
+##Body registro de usuarios SWAGGER
 
-## generos se registra del 1 al 3
-INSERT INTO `tren_verde_db`.`genero` (`genero`) VALUES ('1');
+{
+  "username": "usuario2",
+  "password": "contraseña1234",
+  "roles": [
+    {
+      "idRol": 1,
+      "nombreRol": "ROLE_USER",
+      "usuarios": []
+    }
+  ],
+  "id": 0
+}
 
-SELECT * FROM `tren_verde_db`.`tipo_documento`;
+## Body Editar usuarios en POSTMAN
 
-## tipo documento se registra del 1 al 6
-INSERT INTO `tren_verde_db`.`tipo_documento` (`tipo_documento`) VALUES ('1');
+http://localhost:8090/trenverde/api/usuarios/actualizar/1
 
-SELECT * FROM `tren_verde_db`.`tipo_persona`;
-
-## tipo persona se registra del 1 al 2
-INSERT INTO `tren_verde_db`.`tipo_persona` (`tipo_persona`) VALUES ('1');
+{
+  "username": "usuario2sd",
+  "password": "26f3645ffdfsd",
+  "roles": [
+    {
+      "idRol": 3 // rol que tendra el usuario en el sistema
+    }
+  ]
+}

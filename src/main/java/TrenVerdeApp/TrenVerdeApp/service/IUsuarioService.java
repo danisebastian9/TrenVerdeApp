@@ -13,8 +13,8 @@ public interface IUsuarioService {
     Collection<? extends GrantedAuthority> mapRolesToAuthorities(Set<Rol> roles);
 
     public List<Usuario> listarUsuarios();
-    //public Usuario guardarUsuario(Usuario usuario);
-    ResponseEntity<?> guardarUsuario(Usuario usuario);
+    ResponseEntity<?> guardarUsuario(Usuario usuario, String tipoRol);
+    ResponseEntity<?> guardarAdmin(Usuario usuario, String tipoRol);
     public Usuario buscarUsuarioPorId(Integer id);
     public Usuario buscarUsuarioPorUsername(String username);
     public void eliminarUsuario(Long id);

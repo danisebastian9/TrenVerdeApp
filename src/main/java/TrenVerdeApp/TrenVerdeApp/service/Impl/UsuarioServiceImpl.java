@@ -3,6 +3,7 @@ package TrenVerdeApp.TrenVerdeApp.service.Impl;
 
 import TrenVerdeApp.TrenVerdeApp.entity.Rol;
 import TrenVerdeApp.TrenVerdeApp.entity.Usuario;
+import TrenVerdeApp.TrenVerdeApp.repository.IRolRepository;
 import TrenVerdeApp.TrenVerdeApp.repository.IUsuarioRepository;
 import TrenVerdeApp.TrenVerdeApp.service.IUsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +31,9 @@ public class UsuarioServiceImpl implements UserDetailsService, IUsuarioService {
     private IUsuarioRepository usuarioRepository;
 
     @Autowired
+    private IRolRepository rolRepository;
+
+    @Autowired
     private PasswordEncoder passwordEncoder;
 
     @Override
@@ -51,9 +55,33 @@ public class UsuarioServiceImpl implements UserDetailsService, IUsuarioService {
         return usuarioRepository.findAll();
     }
 
+
     @Override
-    public ResponseEntity<?> guardarUsuario(Usuario usuario) {
+    public ResponseEntity<?> guardarUsuario(Usuario usuario, String tipoRol) {
         usuario.setPassword(passwordEncoder.encode(usuario.getPassword()));
+
+        Rol userRole = rolRepository.findByTipoRol(Rol.TipoRol.USER).orElseGet(() -> {
+            Rol newUserRole = new Rol(Rol.TipoRol.USER);
+            return rolRepository.save(newUserRole);
+        });
+        usuario.getRoles().add(userRole);
+        try {
+            Usuario nuevoUsuario = usuarioRepository.save(usuario);
+            return new ResponseEntity<>(nuevoUsuario, HttpStatus.CREATED);
+        } catch (DataIntegrityViolationException e) {
+            return new ResponseEntity<>("El nombre de usuario ya está en uso. Por favor, elija otro nombre de usuario.", HttpStatus.CONFLICT);
+        }
+    }
+
+    @Override
+    public ResponseEntity<?> guardarAdmin(Usuario usuario, String tipoRol) {
+        usuario.setPassword(passwordEncoder.encode(usuario.getPassword()));
+
+        Rol adminRole = rolRepository.findByTipoRol(Rol.TipoRol.ADMIN).orElseGet(() -> {
+            Rol newAdminRole = new Rol(Rol.TipoRol.ADMIN);
+            return rolRepository.save(newAdminRole);
+        });
+        usuario.getRoles().add(adminRole);
         try {
             Usuario nuevoUsuario = usuarioRepository.save(usuario);
             return new ResponseEntity<>(nuevoUsuario, HttpStatus.CREATED);

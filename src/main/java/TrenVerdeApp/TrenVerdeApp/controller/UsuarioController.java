@@ -27,12 +27,25 @@ public class UsuarioController {
         return new ResponseEntity<>(usuarios, HttpStatus.OK);
     }
 
-    @PostMapping("/registrar")
+    @PostMapping("/registro_usuario")
     public ResponseEntity<?> guardarUsuario(@Valid @RequestBody Usuario usuario, BindingResult bindingResult) {
         if (bindingResult.hasErrors())
             return new ResponseEntity<>(Objects.requireNonNull(bindingResult.getFieldError().getDefaultMessage()), HttpStatus.BAD_REQUEST);
         try {
-            ResponseEntity<?> nuevoUsuario = usuarioService.guardarUsuario(usuario);
+            ResponseEntity<?> nuevoUsuario = usuarioService.guardarUsuario(usuario, "USER");
+            return new ResponseEntity<>(nuevoUsuario, HttpStatus.CREATED);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PostMapping("/registro_administrador")
+    public ResponseEntity<?> guardarAdmin(@Valid @RequestBody Usuario usuario, BindingResult bindingResult) {
+        if (bindingResult.hasErrors())
+            return new ResponseEntity<>(Objects.requireNonNull(bindingResult.getFieldError().getDefaultMessage()), HttpStatus.BAD_REQUEST);
+        try {
+            ResponseEntity<?> nuevoUsuario = usuarioService.guardarAdmin(usuario, "ADMIN");
             return new ResponseEntity<>(nuevoUsuario, HttpStatus.CREATED);
         } catch (Exception e) {
             e.printStackTrace();

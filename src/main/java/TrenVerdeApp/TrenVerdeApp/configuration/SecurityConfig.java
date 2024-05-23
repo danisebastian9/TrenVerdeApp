@@ -23,7 +23,7 @@ public class SecurityConfig {
                 .csrf().disable()
                 .authorizeRequests(authorizeRequests ->
                         authorizeRequests
-                                .requestMatchers(HttpMethod.POST, "/api/usuarios/registrar").permitAll()
+                                .requestMatchers(HttpMethod.POST, "/api/usuarios/registro_usuario").permitAll()
                                 .anyRequest().permitAll()
                 );
         return http.build();
@@ -39,7 +39,7 @@ public class SecurityConfig {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true);
-        config.addAllowedOrigin("http://127.0.0.1:5500"); // Reemplaza con el origen de tu frontend
+        config.addAllowedOrigin("http://127.0.0.1:5500"); // Reemplazar con dirección del frontend
         config.addAllowedHeader("*");
         config.addAllowedMethod("*");
         source.registerCorsConfiguration("/**", config);

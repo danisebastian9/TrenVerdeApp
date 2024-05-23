@@ -119,14 +119,6 @@ public class UsuarioServiceImpl implements UserDetailsService, IUsuarioService {
         } catch (DataIntegrityViolationException e) {
             return new ResponseEntity<>("El nombre de usuario ya está en uso. Por favor, elija otro nombre de usuario.", HttpStatus.CONFLICT);
         }
-//            Usuario usuarioExistente = usuarioRepository.findById(Math.toIntExact(idUsuario)).orElse(null);
-//            if (usuarioExistente != null) {
-//                usuarioExistente.setUsername(usuarioActualizado.getUsername());
-//                usuarioExistente.setPassword(passwordEncoder.encode(usuarioActualizado.getPassword()));
-//                return new ResponseEntity<>(usuarioRepository.save(usuarioExistente), HttpStatus.OK);
-//            }
-//                return new ResponseEntity<>("El nombre de usuario ya está en uso. Por favor, elija otro nombre de usuario.", HttpStatus.CONFLICT);
-//
     }
 }
 
